@@ -8,10 +8,13 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -30,10 +33,30 @@ public class Completed extends ActionBarActivity implements ListView.OnItemClick
     private TaskAdapter taskAdapter;
     private TaskDbHelper dbHelper;
 
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
+
+    private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            int position = (int) buttonView.getTag();
+            Task task = taskAdapter.getItem(position);
+
+            task.completed = isChecked;
+            taskAdapter.toggleCompleted(task.id, task.completed);
+
+            if (!task.completed && task.cleared) {
+                dbHelper.setNotCleared(task.id);
+                taskAdapter.remove(position);
+            } else if (!task.completed) {
+                taskAdapter.remove(position);
+            }
+        }
+    };
+
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_completed);
             drawerLayout.closeDrawers();
         }
     };
@@ -47,8 +70,17 @@ public class Completed extends ActionBarActivity implements ListView.OnItemClick
         dbHelper = new TaskDbHelper(this);
 
         ListView taskList = (ListView) findViewById(R.id.completed_task_list);
+
         taskList.setAdapter(taskAdapter);
         taskList.setOnItemClickListener(this);
+        taskAdapter.setOnCheckedChangedListener(checkedChangeListener);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_completed);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open_drawer, R.string.close_drawer);
+
+        drawerLayout.setDrawerListener(drawerToggle);
 
         IntentFilter intentFilter = new IntentFilter(DrawerFragment.ACTION_CLOSE_DRAWER);
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
@@ -62,9 +94,9 @@ public class Completed extends ActionBarActivity implements ListView.OnItemClick
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
     }
 
     @Override
@@ -74,10 +106,33 @@ public class Completed extends ActionBarActivity implements ListView.OnItemClick
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(Gravity.START)) {
+            drawerLayout.closeDrawer(Gravity.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         switch (id) {
+            case android.R.id.home:
+                if (!drawerLayout.isDrawerOpen(Gravity.START)) {
+                    drawerLayout.openDrawer(Gravity.START);
+                } else {
+                    drawerLayout.closeDrawer(Gravity.START);
+                }
+                return true;
+
             case R.id.action_delete_all:
                 deleteAllCompleted();
                 return true;
@@ -89,7 +144,6 @@ public class Completed extends ActionBarActivity implements ListView.OnItemClick
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Task task = (Task) parent.getItemAtPosition(position);
-
         Intent intent = new Intent(this, Details.class);
         intent.putExtra("task", task);
         startActivityForResult(intent, TASK_DETAILS_CODE);

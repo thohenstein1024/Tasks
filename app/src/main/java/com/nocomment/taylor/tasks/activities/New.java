@@ -31,12 +31,12 @@ public class New extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         taskName = (EditText) findViewById(R.id.input_task_name);
         dueDate = (EditText) findViewById(R.id.input_due_date);
         location = (EditText) findViewById(R.id.input_location);
         notes = (EditText) findViewById(R.id.input_notes);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -53,9 +53,11 @@ public class New extends ActionBarActivity {
             case android.R.id.home:
                 finish();
                 return true;
+
             case R.id.action_save_task:
                 saveTask();
                 return true;
+
             case R.id.action_discard_task:
                 discardTask();
                 return true;

@@ -145,11 +145,14 @@ public class TaskDbHelper extends SQLiteOpenHelper {
                         TaskContract.TaskEntry.COLUMN_NAME_DELETED + " = 0", null);
     }
 
-    public int hardDeleteTask(int id) {
+    public int restoreAllTrash() {
         SQLiteDatabase db = getWritableDatabase();
 
-        return db.delete(TaskContract.TaskEntry.TABLE_NAME,
-                TaskContract.TaskEntry._ID + " = " + id, null);
+        ContentValues values = new ContentValues();
+        values.put(TaskContract.TaskEntry.COLUMN_NAME_DELETED, 0);
+
+        return db.update(TaskContract.TaskEntry.TABLE_NAME, values,
+                TaskContract.TaskEntry.COLUMN_NAME_DELETED + " = 1", null);
     }
 
     public int hardDeleteAllTrash() {
@@ -157,6 +160,13 @@ public class TaskDbHelper extends SQLiteOpenHelper {
 
         return db.delete(TaskContract.TaskEntry.TABLE_NAME,
                 TaskContract.TaskEntry.COLUMN_NAME_DELETED + " = 1", null);
+    }
+
+    public int hardDeleteTask(int id) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        return db.delete(TaskContract.TaskEntry.TABLE_NAME,
+                TaskContract.TaskEntry._ID + " = " + id, null);
     }
 
     public List<Task> getAllCurrentTasks() {

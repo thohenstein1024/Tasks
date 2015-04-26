@@ -8,8 +8,15 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.ActionMode;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,15 +28,35 @@ import com.nocomment.taylor.tasks.models.Task;
 import java.util.List;
 
 
-public class Trash extends ActionBarActivity {
+public class Trash extends ActionBarActivity implements AdapterView.OnItemLongClickListener, AbsListView.MultiChoiceModeListener {
 
     private TaskAdapter taskAdapter;
     private TaskDbHelper dbHelper;
 
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
+
+    private android.support.v7.view.ActionMode actionMode;
+    private android.support.v7.view.ActionMode.Callback callback;
+
+    private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            int position = (int) buttonView.getTag();
+            Task task = taskAdapter.getItem(position);
+
+            task.completed = isChecked;
+            taskAdapter.toggleCompleted(task.id, task.completed);
+
+            if (!task.completed && task.cleared) {
+                dbHelper.setNotCleared(task.id);
+            }
+        }
+    };
+
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_trash);
             drawerLayout.closeDrawers();
         }
     };
@@ -43,7 +70,19 @@ public class Trash extends ActionBarActivity {
         dbHelper = new TaskDbHelper(this);
 
         ListView taskList = (ListView) findViewById(R.id.deleted_task_list);
+
         taskList.setAdapter(taskAdapter);
+        taskList.setOnItemLongClickListener(this);
+        taskList.setMultiChoiceModeListener(this);
+        taskList.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
+        taskAdapter.setOnCheckedChangedListener(checkedChangeListener);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_trash);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open_drawer, R.string.close_drawer);
+
+        drawerLayout.setDrawerListener(drawerToggle);
 
         IntentFilter intentFilter = new IntentFilter(DrawerFragment.ACTION_CLOSE_DRAWER);
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
@@ -57,9 +96,9 @@ public class Trash extends ActionBarActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
     }
 
     @Override
@@ -69,16 +108,49 @@ public class Trash extends ActionBarActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(Gravity.START)) {
+            drawerLayout.closeDrawer(Gravity.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_empty_trash:
+            case android.R.id.home:
+                if (!drawerLayout.isDrawerOpen(Gravity.START)) {
+                    drawerLayout.openDrawer(Gravity.START);
+                } else {
+                    drawerLayout.closeDrawer(Gravity.START);
+                }
+                return true;
+
+            case R.id.action_delete_all:
                 deleteAll();
+                return true;
+
+            case R.id.action_restore_all:
+                restoreAll();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        actionMode = startSupportActionMode(callback);
+        return true;
     }
 
     private void deleteAll() {
@@ -97,11 +169,54 @@ public class Trash extends ActionBarActivity {
         toast.show();
     }
 
+    private void restoreAll() {
+        int restoredRowID = dbHelper.restoreAllTrash();
+        String feedback;
+
+        if (restoredRowID > 0) {
+            List<Task> deletedTasks = dbHelper.getAllDeletedTasks();
+            taskAdapter.swapTasks(deletedTasks);
+            feedback = getResources().getString(R.string.all_tasks_restored);
+        } else {
+            feedback = getResources().getString(R.string.no_tasks_to_restore);
+        }
+
+        Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
     private void deleteSelected() {
-        //TODO create method body
+        //TODO: create method body
     }
 
     private void restoreSelected() {
-        //TODO create method body
+        //TODO: create method body
+    }
+
+    @Override
+    public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        //inflate contextual action bar
+        mode.getMenuInflater().inflate(R.menu.alt_menu_trash, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+
     }
 }

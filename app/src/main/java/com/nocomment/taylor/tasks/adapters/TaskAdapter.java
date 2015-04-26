@@ -22,7 +22,7 @@ public class TaskAdapter extends BaseAdapter {
     private Context context;
     private List<Task> tasks = new ArrayList<Task>();
     private LayoutInflater inflater;
-    private CompoundButton.OnCheckedChangeListener listener;
+    private CompoundButton.OnCheckedChangeListener checkedChangeListener;
 
     public TaskAdapter(Context context) {
         this.context = context;
@@ -59,41 +59,20 @@ public class TaskAdapter extends BaseAdapter {
         TextView taskName = (TextView) view.findViewById(R.id.display_list_task_name);
         TextView dueDate = (TextView) view.findViewById(R.id.display_list_due_date);
 
-        if (listener != null) {
-            checkBox.setOnCheckedChangeListener(listener);
+        if (checkedChangeListener != null) {
+            checkBox.setOnCheckedChangeListener(checkedChangeListener);
         }
 
         checkBox.setTag(position);
         checkBox.setChecked(task.completed);
-
-
         taskName.setText(task.taskName);
         dueDate.setText(task.dueDate);
 
         return view;
     }
 
-    /*@Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        int position = (int) buttonView.getTag();
-        Task task = tasks.get(position);
-        task.completed = isChecked;
-
-        toggleCompleted(task.id, task.completed);
-
-        if (!task.deleted && !task.completed && task.cleared) {
-            TaskDbHelper dbHelper = new TaskDbHelper(context);
-            dbHelper.setNotCleared(task.id);
-            tasks.remove(position);
-        } else if (!task.deleted && !task.completed) {
-            tasks.remove(position);
-        }
-
-        notifyDataSetChanged();
-    }*/
-
     public void setOnCheckedChangedListener(CompoundButton.OnCheckedChangeListener listener) {
-        this.listener = listener;
+        this.checkedChangeListener = listener;
     }
 
     public void remove(int position) {

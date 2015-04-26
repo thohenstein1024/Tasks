@@ -37,7 +37,7 @@ public class HomeScreen extends ActionBarActivity implements ListView.OnItemClic
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
 
-    private CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
+    private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             int position = (int) buttonView.getTag();
@@ -66,7 +66,7 @@ public class HomeScreen extends ActionBarActivity implements ListView.OnItemClic
 
         taskList.setAdapter(taskAdapter);
         taskList.setOnItemClickListener(this);
-        taskAdapter.setOnCheckedChangedListener(listener);
+        taskAdapter.setOnCheckedChangedListener(checkedChangeListener);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -105,6 +105,15 @@ public class HomeScreen extends ActionBarActivity implements ListView.OnItemClic
     }
 
     @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(Gravity.START)) {
+            drawerLayout.closeDrawer(Gravity.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -132,7 +141,6 @@ public class HomeScreen extends ActionBarActivity implements ListView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Task task = (Task) parent.getItemAtPosition(position);
-
         Intent intent = new Intent(this, Details.class);
         intent.putExtra("task", task);
         startActivityForResult(intent, TASK_DETAILS_CODE);

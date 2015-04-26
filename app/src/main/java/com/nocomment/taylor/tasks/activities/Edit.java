@@ -33,8 +33,6 @@ public class Edit extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         Bundle bundle = getIntent().getExtras();
         task = bundle.getParcelable("task");
 
@@ -44,6 +42,8 @@ public class Edit extends ActionBarActivity {
         notes = (EditText) findViewById(R.id.input_edit_notes);
 
         populateFields(task);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -60,9 +60,11 @@ public class Edit extends ActionBarActivity {
             case android.R.id.home:
                 finish();
                 return true;
+
             case R.id.action_save_changes:
                 saveChanges();
                 return true;
+
             case R.id.action_discard_changes:
                 discardChanges();
                 return true;
@@ -119,7 +121,6 @@ public class Edit extends ActionBarActivity {
 
     private void discardChanges() {
         String feedback = getResources().getString(R.string.changes_discarded);
-
         Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
         toast.show();
         finish();

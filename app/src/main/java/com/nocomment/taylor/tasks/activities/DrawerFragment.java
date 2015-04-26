@@ -43,14 +43,16 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
         int id = v.getId();
 
         switch (id) {
-            case R.id.menu_item_tasks:  //TODO check which activity is inflating the fragment
+            case R.id.menu_item_tasks:  //TODO: check which activity is inflating the fragment
                 closeDrawer();
                 switchActivity(HomeScreen.class);
                 break;
+
             case R.id.menu_item_completed:
                 closeDrawer();
                 switchActivity(Completed.class);
                 break;
+
             case R.id.menu_item_trash:
                 closeDrawer();
                 switchActivity(Trash.class);

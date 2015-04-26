@@ -30,8 +30,6 @@ public class Details extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         Bundle bundle = getIntent().getExtras();
         task = bundle.getParcelable("task");
 
@@ -42,6 +40,8 @@ public class Details extends ActionBarActivity {
 
         populateFields(task);
         setVisibility(taskName, dueDate, location, notes);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -58,9 +58,11 @@ public class Details extends ActionBarActivity {
             case android.R.id.home:
                 finish();
                 return true;
+
             case R.id.action_edit_task:
                 editTask();
                 return true;
+
             case R.id.action_delete_task:
                 deleteTask();
                 return true;
@@ -72,7 +74,6 @@ public class Details extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == EDIT_TASK_CODE) {
             if (resultCode == RESULT_OK) {
                 task = data.getParcelableExtra("task");
@@ -92,29 +93,25 @@ public class Details extends ActionBarActivity {
     private void setVisibility(TextView taskName, TextView dueDate, TextView location, TextView notes) {
         if (TextUtils.isEmpty(taskName.getText())) {
             taskName.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             taskName.setVisibility(View.VISIBLE);
         }
 
         if (TextUtils.isEmpty(dueDate.getText())) {
             dueDate.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             dueDate.setVisibility(View.VISIBLE);
         }
 
         if (TextUtils.isEmpty(location.getText())) {
             location.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             location.setVisibility(View.VISIBLE);
         }
 
         if (TextUtils.isEmpty(notes.getText())) {
             notes.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             notes.setVisibility(View.VISIBLE);
         }
     }
