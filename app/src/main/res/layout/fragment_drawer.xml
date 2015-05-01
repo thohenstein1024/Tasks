@@ -5,23 +5,23 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/menu_item_tasks"
+        android:id="@+id/side_menu_tasks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
-        android:text="@string/tasks" />
+        android:text="@string/app_name" />
 
     <TextView
-        android:id="@+id/menu_item_completed"
+        android:id="@+id/side_menu_completed_tasks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
-        android:text="@string/completed_tasks" />
+        android:text="@string/title_activity_completed" />
 
     <TextView
-        android:id="@+id/menu_item_trash"
+        android:id="@+id/side_menu_trash"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
-        android:text="@string/trash" />
+        android:text="@string/title_activity_trash" />
 </LinearLayout>

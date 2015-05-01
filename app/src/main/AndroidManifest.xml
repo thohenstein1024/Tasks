@@ -33,7 +33,8 @@
         <activity
             android:name=".activities.New"
             android:label="@string/title_activity_new"
-            android:parentActivityName=".activities.HomeScreen">
+            android:parentActivityName=".activities.HomeScreen"
+            android:windowSoftInputMode="stateVisible">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.HomeScreen" />
@@ -42,8 +43,8 @@
         <activity
             android:name=".activities.Edit"
             android:label="@string/title_activity_edit"
-            android:parentActivityName=".activities.Edit">
-
+            android:parentActivityName=".activities.Details"
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.Details" />

@@ -4,14 +4,14 @@
     tools:context="com.nocomment.taylor.tasks.activities.Trash">
 
     <item
-        android:id="@+id/action_delete_all"
-        android:orderInCategory="101"
-        android:title="@string/delete_all"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/action_restore_all"
         android:orderInCategory="100"
         android:title="@string/restore_all"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_empty_trash"
+        android:orderInCategory="101"
+        android:title="@string/empty_trash"
         app:showAsAction="ifRoom" />
 </menu>

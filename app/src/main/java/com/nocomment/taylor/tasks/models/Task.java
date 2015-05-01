@@ -19,11 +19,12 @@ public class Task implements Parcelable {
     };
 
     public int id;
+
     public String taskName;
     public String dueDate;
     public String location;
-    public boolean locationReminder;
     public String notes;
+
     public boolean completed;
     public boolean cleared;
     public boolean deleted;
@@ -37,7 +38,6 @@ public class Task implements Parcelable {
         taskName = source.readString();
         dueDate = source.readString();
         location = source.readString();
-        locationReminder = source.readInt() != 0;
         notes = source.readString();
         completed = source.readInt() != 0;
         cleared = source.readInt() != 0;
@@ -55,7 +55,6 @@ public class Task implements Parcelable {
         dest.writeString(taskName);
         dest.writeString(dueDate);
         dest.writeString(location);
-        dest.writeInt(locationReminder ? 1 : 0);
         dest.writeString(notes);
         dest.writeInt(completed ? 1 : 0);
         dest.writeInt(cleared ? 1 : 0);

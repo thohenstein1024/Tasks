@@ -20,12 +20,13 @@ import android.widget.Toast;
 
 import com.nocomment.taylor.tasks.R;
 import com.nocomment.taylor.tasks.adapters.TaskAdapter;
-import com.nocomment.taylor.tasks.database.TaskDbHelper;
 import com.nocomment.taylor.tasks.models.Task;
+import com.nocomment.taylor.tasks.storage.TaskDbHelper;
 
 import java.util.List;
 
 
+@SuppressWarnings("deprecation")
 public class Completed extends ActionBarActivity implements ListView.OnItemClickListener {
 
     private static final int TASK_DETAILS_CODE = 200;
@@ -75,6 +76,7 @@ public class Completed extends ActionBarActivity implements ListView.OnItemClick
         taskList.setOnItemClickListener(this);
         taskAdapter.setOnCheckedChangedListener(checkedChangeListener);
 
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_completed);
@@ -122,17 +124,13 @@ public class Completed extends ActionBarActivity implements ListView.OnItemClick
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         int id = item.getItemId();
 
         switch (id) {
-            case android.R.id.home:
-                if (!drawerLayout.isDrawerOpen(Gravity.START)) {
-                    drawerLayout.openDrawer(Gravity.START);
-                } else {
-                    drawerLayout.closeDrawer(Gravity.START);
-                }
-                return true;
-
             case R.id.action_delete_all:
                 deleteAllCompleted();
                 return true;
@@ -156,17 +154,14 @@ public class Completed extends ActionBarActivity implements ListView.OnItemClick
 
     private void deleteAllCompleted() {
         int deletedRowID = dbHelper.softDeleteAllCompleted();
-        String feedback;
 
         if (deletedRowID > 0) {
             List<Task> completedTasks = dbHelper.getAllCompletedTasks();
             taskAdapter.swapTasks(completedTasks);
-            feedback = getResources().getString(R.string.all_completed_tasks_deleted);
-        } else {
-            feedback = getResources().getString(R.string.no_completed_tasks_to_delete);
-        }
 
-        Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
-        toast.show();
+            String feedback = getResources().getString(R.string.all_completed_tasks_moved_to_trash);
+            Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 }

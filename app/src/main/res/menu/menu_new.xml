@@ -7,13 +7,13 @@
         android:id="@+id/action_save_task"
         android:icon="@drawable/ic_action_done"
         android:orderInCategory="100"
-        android:title="@string/save"
+        android:title="@string/save_task"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_discard_task"
         android:icon="@drawable/ic_action_clear"
         android:orderInCategory="101"
-        android:title="@string/discard"
+        android:title="@string/discard_task"
         app:showAsAction="ifRoom" />
 </menu>

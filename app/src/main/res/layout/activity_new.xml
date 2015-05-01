@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:isScrollContainer="true"
     android:orientation="vertical"
     tools:context="com.nocomment.taylor.tasks.activities.New">
 
@@ -21,14 +22,14 @@
 
     <EditText
         android:id="@+id/input_location"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="@string/location"
         android:inputType="textPostalAddress|textCapWords" />
 
     <EditText
         android:id="@+id/input_notes"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="@string/notes" />
 </LinearLayout>

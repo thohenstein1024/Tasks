@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.Menu;
@@ -22,12 +23,14 @@ import android.widget.Toast;
 
 import com.nocomment.taylor.tasks.R;
 import com.nocomment.taylor.tasks.adapters.TaskAdapter;
-import com.nocomment.taylor.tasks.database.TaskDbHelper;
 import com.nocomment.taylor.tasks.models.Task;
+import com.nocomment.taylor.tasks.storage.TaskDbHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
+@SuppressWarnings("deprecation")
 public class Trash extends ActionBarActivity implements AdapterView.OnItemLongClickListener, AbsListView.MultiChoiceModeListener {
 
     private TaskAdapter taskAdapter;
@@ -36,8 +39,12 @@ public class Trash extends ActionBarActivity implements AdapterView.OnItemLongCl
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
 
+    @SuppressWarnings("unused")
     private android.support.v7.view.ActionMode actionMode;
+    @SuppressWarnings("unused")
     private android.support.v7.view.ActionMode.Callback callback;
+
+    private ArrayList<Integer> selectedTaskIDs = new ArrayList<>();
 
     private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -77,6 +84,7 @@ public class Trash extends ActionBarActivity implements AdapterView.OnItemLongCl
         taskList.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         taskAdapter.setOnCheckedChangedListener(checkedChangeListener);
 
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_trash);
@@ -124,18 +132,14 @@ public class Trash extends ActionBarActivity implements AdapterView.OnItemLongCl
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         int id = item.getItemId();
 
         switch (id) {
-            case android.R.id.home:
-                if (!drawerLayout.isDrawerOpen(Gravity.START)) {
-                    drawerLayout.openDrawer(Gravity.START);
-                } else {
-                    drawerLayout.closeDrawer(Gravity.START);
-                }
-                return true;
-
-            case R.id.action_delete_all:
+            case R.id.action_empty_trash:
                 deleteAll();
                 return true;
 
@@ -153,54 +157,21 @@ public class Trash extends ActionBarActivity implements AdapterView.OnItemLongCl
         return true;
     }
 
-    private void deleteAll() {
-        int deletedRowID = dbHelper.hardDeleteAllTrash();
-        String feedback;
-
-        if (deletedRowID > 0) {
-            List<Task> deletedTasks = dbHelper.getAllDeletedTasks();
-            taskAdapter.swapTasks(deletedTasks);
-            feedback = getResources().getString(R.string.all_tasks_deleted);
-        } else {
-            feedback = getResources().getString(R.string.no_tasks_to_delete);
-        }
-
-        Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
-        toast.show();
-    }
-
-    private void restoreAll() {
-        int restoredRowID = dbHelper.restoreAllTrash();
-        String feedback;
-
-        if (restoredRowID > 0) {
-            List<Task> deletedTasks = dbHelper.getAllDeletedTasks();
-            taskAdapter.swapTasks(deletedTasks);
-            feedback = getResources().getString(R.string.all_tasks_restored);
-        } else {
-            feedback = getResources().getString(R.string.no_tasks_to_restore);
-        }
-
-        Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
-        toast.show();
-    }
-
-    private void deleteSelected() {
-        //TODO: create method body
-    }
-
-    private void restoreSelected() {
-        //TODO: create method body
-    }
-
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+        Task task = taskAdapter.getItem(position);
 
+        if (checked) {
+            selectedTaskIDs.add(task.id);
+        } else {
+            selectedTaskIDs.remove(selectedTaskIDs.indexOf(task.id));
+        }
+
+        mode.setTitle(selectedTaskIDs.size() + "  Selected");
     }
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        //inflate contextual action bar
         mode.getMenuInflater().inflate(R.menu.alt_menu_trash, menu);
         return true;
     }
@@ -212,11 +183,84 @@ public class Trash extends ActionBarActivity implements AdapterView.OnItemLongCl
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_delete_selected:
+                deleteSelected();
+                mode.finish();
+                return true;
+
+            case R.id.action_restore_selected:
+                restoreSelected();
+                mode.finish();
+                return true;
+        }
+
         return false;
     }
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+        selectedTaskIDs.clear();
+        actionMode = null;
+    }
 
+    private void deleteAll() {
+        //TODO: confirmation dialogue
+        int deletedRowID = dbHelper.hardDeleteAllTrash();
+        if (deletedRowID > 0) {
+            List<Task> deletedTasks = dbHelper.getAllDeletedTasks();
+            taskAdapter.swapTasks(deletedTasks);
+        }
+    }
+
+    private void restoreAll() {
+        int restoredRowID = dbHelper.restoreAllTrash();
+
+        if (restoredRowID > 0) {
+            List<Task> deletedTasks = dbHelper.getAllDeletedTasks();
+            taskAdapter.swapTasks(deletedTasks);
+
+            String feedback = getResources().getString(R.string.all_tasks_restored);
+            Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
+    private void deleteSelected() {
+        String ids = "(" + TextUtils.join(",", selectedTaskIDs) + ")";
+
+        int deletedRowID = dbHelper.hardDeleteSelection(ids);
+        String feedback;
+
+        if (deletedRowID > 0) {
+            List<Task> deletedTasks = dbHelper.getAllDeletedTasks();
+            taskAdapter.swapTasks(deletedTasks);
+            feedback = getResources().getString(R.string.selected_tasks_deleted);
+        } else {
+            feedback = getResources().getString(R.string.error_deleting_selected_tasks);
+        }
+
+        Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    private void restoreSelected() {
+        String ids = "(" + TextUtils.join(",", selectedTaskIDs) + ")";
+
+        int restoredRowID = dbHelper.restoreSelection(ids);
+        String feedback;
+
+        if (restoredRowID > 0) {
+            List<Task> deletedTasks = dbHelper.getAllDeletedTasks();
+            taskAdapter.swapTasks(deletedTasks);
+            feedback = getResources().getString(R.string.selected_tasks_restored);
+        } else {
+            feedback = getResources().getString(R.string.error_restoring_selected_tasks);
+        }
+
+        Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

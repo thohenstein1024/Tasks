@@ -10,8 +10,8 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.nocomment.taylor.tasks.R;
-import com.nocomment.taylor.tasks.database.TaskDbHelper;
 import com.nocomment.taylor.tasks.models.Task;
+import com.nocomment.taylor.tasks.storage.TaskDbHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
 public class TaskAdapter extends BaseAdapter {
 
     private Context context;
-    private List<Task> tasks = new ArrayList<Task>();
+    private List<Task> tasks = new ArrayList<>();
     private LayoutInflater inflater;
     private CompoundButton.OnCheckedChangeListener checkedChangeListener;
 
@@ -75,15 +75,15 @@ public class TaskAdapter extends BaseAdapter {
         this.checkedChangeListener = listener;
     }
 
-    public void remove(int position) {
-        tasks.remove(position);
-        notifyDataSetChanged();
-    }
-
     public void toggleCompleted(int id, boolean isCompleted) {
         TaskDbHelper dbHelper = new TaskDbHelper(context);
         int completed = (isCompleted ? 1 : 0);
         dbHelper.toggleCompleted(id, completed);
+    }
+
+    public void remove(int position) {
+        tasks.remove(position);
+        notifyDataSetChanged();
     }
 
     public void swapTasks(List<Task> tasks) {

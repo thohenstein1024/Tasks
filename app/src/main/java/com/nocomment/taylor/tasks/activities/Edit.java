@@ -12,16 +12,18 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.nocomment.taylor.tasks.R;
-import com.nocomment.taylor.tasks.database.TaskDbHelper;
 import com.nocomment.taylor.tasks.models.Task;
+import com.nocomment.taylor.tasks.storage.TaskDbHelper;
 
 
+@SuppressWarnings("deprecation")
 public class Edit extends ActionBarActivity {
 
     private EditText taskName;
     private EditText dueDate;
     private EditText location;
     private EditText notes;
+
     private Task task;
 
     public static int dpToPixels(Context context, int dip) {
@@ -43,6 +45,7 @@ public class Edit extends ActionBarActivity {
 
         populateFields(task);
 
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -106,12 +109,11 @@ public class Edit extends ActionBarActivity {
             toast.show();
             finish();
         } else {
-            String feedback = getResources().getString(R.string.task_needs_name);
-
             int[] coordinates = {0, 0};
             taskName.getLocationOnScreen(coordinates);
             int taskNameYPos = coordinates[1];
 
+            String feedback = getResources().getString(R.string.task_needs_name);
             Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_LONG);
             toast.setGravity(Gravity.TOP | Gravity.START, taskName.getRight() + dpToPixels(this, 13), taskNameYPos - dpToPixels(this, 27));
             toast.show();
@@ -120,9 +122,7 @@ public class Edit extends ActionBarActivity {
     }
 
     private void discardChanges() {
-        String feedback = getResources().getString(R.string.changes_discarded);
-        Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
-        toast.show();
+        //TODO: confirmation dialogue
         finish();
     }
 }

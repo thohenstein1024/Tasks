@@ -11,10 +11,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nocomment.taylor.tasks.R;
-import com.nocomment.taylor.tasks.database.TaskDbHelper;
 import com.nocomment.taylor.tasks.models.Task;
+import com.nocomment.taylor.tasks.storage.TaskDbHelper;
 
 
+@SuppressWarnings("deprecation")
 public class Details extends ActionBarActivity {
 
     private static final int EDIT_TASK_CODE = 300;
@@ -23,6 +24,7 @@ public class Details extends ActionBarActivity {
     private TextView dueDate;
     private TextView location;
     private TextView notes;
+
     private Task task;
 
     @Override
@@ -41,7 +43,9 @@ public class Details extends ActionBarActivity {
         populateFields(task);
         setVisibility(taskName, dueDate, location, notes);
 
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(task.taskName);
     }
 
     @Override

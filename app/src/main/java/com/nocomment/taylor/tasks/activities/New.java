@@ -11,10 +11,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.nocomment.taylor.tasks.R;
-import com.nocomment.taylor.tasks.database.TaskDbHelper;
 import com.nocomment.taylor.tasks.models.Task;
+import com.nocomment.taylor.tasks.storage.TaskDbHelper;
 
 
+@SuppressWarnings("deprecation")
 public class New extends ActionBarActivity {
 
     private EditText taskName;
@@ -36,6 +37,7 @@ public class New extends ActionBarActivity {
         location = (EditText) findViewById(R.id.input_location);
         notes = (EditText) findViewById(R.id.input_notes);
 
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -77,26 +79,23 @@ public class New extends ActionBarActivity {
             task.notes = notes.getText().toString();
 
             long newRowID = dbHelper.insertTask(task);
-            String feedback;
 
             if (newRowID != -1) {
                 setResult(RESULT_OK);
-                feedback = getResources().getString(R.string.task_saved);
             } else {
                 setResult(RESULT_CANCELED);
-                feedback = getResources().getString(R.string.error_saving_task);
+                String feedback = getResources().getString(R.string.error_saving_task);
+                Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
+                toast.show();
             }
 
-            Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
-            toast.show();
             finish();
         } else {
-            String feedback = getResources().getString(R.string.task_needs_name);
-
             int[] coordinates = {0, 0};
             taskName.getLocationOnScreen(coordinates);
             int taskNameYPos = coordinates[1];
 
+            String feedback = getResources().getString(R.string.task_needs_name);
             Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_LONG);
             toast.setGravity(Gravity.TOP | Gravity.START, taskName.getRight() + dpToPixels(this, 13), taskNameYPos - dpToPixels(this, 27));
             toast.show();
@@ -109,14 +108,10 @@ public class New extends ActionBarActivity {
                 dueDate.getText().length() == 0 &&
                 location.getText().length() == 0 &&
                 notes.getText().length() == 0) {
-            String feedback = getResources().getString(R.string.task_discarded);
-
-            Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
-            toast.show();
             finish();
         } else {
-            Toast toast = Toast.makeText(getApplicationContext(), R.string.confirm_discard_task, Toast.LENGTH_LONG);
-            toast.show();  //for testing
+            //TODO: confirmation dialogue
+            finish();
         }
     }
 }

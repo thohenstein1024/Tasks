@@ -16,10 +16,10 @@
     </FrameLayout>
 
     <FrameLayout
-        android:layout_width="300dp"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/white"
+        android:background="@color/md_white_1000"
         android:clickable="true">
 
         <fragment

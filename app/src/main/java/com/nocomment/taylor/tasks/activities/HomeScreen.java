@@ -20,12 +20,13 @@ import android.widget.Toast;
 
 import com.nocomment.taylor.tasks.R;
 import com.nocomment.taylor.tasks.adapters.TaskAdapter;
-import com.nocomment.taylor.tasks.database.TaskDbHelper;
 import com.nocomment.taylor.tasks.models.Task;
+import com.nocomment.taylor.tasks.storage.TaskDbHelper;
 
 import java.util.List;
 
 
+@SuppressWarnings("deprecation")
 public class HomeScreen extends ActionBarActivity implements ListView.OnItemClickListener {
 
     private static final int NEW_TASK_CODE = 100;
@@ -68,6 +69,7 @@ public class HomeScreen extends ActionBarActivity implements ListView.OnItemClic
         taskList.setOnItemClickListener(this);
         taskAdapter.setOnCheckedChangedListener(checkedChangeListener);
 
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_home);
@@ -115,17 +117,13 @@ public class HomeScreen extends ActionBarActivity implements ListView.OnItemClic
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         int id = item.getItemId();
 
         switch (id) {
-            case android.R.id.home:
-                if (!drawerLayout.isDrawerOpen(Gravity.START)) {
-                    drawerLayout.openDrawer(Gravity.START);
-                } else {
-                    drawerLayout.closeDrawer(Gravity.START);
-                }
-                return true;
-
             case R.id.action_new_task:
                 newTask();
                 return true;
@@ -158,17 +156,14 @@ public class HomeScreen extends ActionBarActivity implements ListView.OnItemClic
 
     private void clearCompleted() {
         int updatedRowID = dbHelper.clearCompleted();
-        String feedback;
 
         if (updatedRowID > 0) {
             List<Task> currentTasks = dbHelper.getAllCurrentTasks();
             taskAdapter.swapTasks(currentTasks);
-            feedback = getResources().getString(R.string.completed_tasks_cleared);
         } else {
-            feedback = getResources().getString(R.string.no_completed_tasks_to_clear);
+            String feedback = getResources().getString(R.string.no_completed_tasks_to_clear);
+            Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
+            toast.show();
         }
-
-        Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
-        toast.show();
     }
 }

@@ -29,9 +29,9 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TextView tasks = (TextView) view.findViewById(R.id.menu_item_tasks);
-        TextView completed = (TextView) view.findViewById(R.id.menu_item_completed);
-        TextView trash = (TextView) view.findViewById(R.id.menu_item_trash);
+        TextView tasks = (TextView) view.findViewById(R.id.side_menu_tasks);
+        TextView completed = (TextView) view.findViewById(R.id.side_menu_completed_tasks);
+        TextView trash = (TextView) view.findViewById(R.id.side_menu_trash);
 
         tasks.setOnClickListener(this);
         completed.setOnClickListener(this);
@@ -43,19 +43,25 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
         int id = v.getId();
 
         switch (id) {
-            case R.id.menu_item_tasks:  //TODO: check which activity is inflating the fragment
+            case R.id.side_menu_tasks:
+                if (!(getActivity() instanceof HomeScreen)) {
+                    switchActivity(HomeScreen.class);
+                }
                 closeDrawer();
-                switchActivity(HomeScreen.class);
                 break;
 
-            case R.id.menu_item_completed:
+            case R.id.side_menu_completed_tasks:
+                if (!(getActivity() instanceof Completed)) {
+                    switchActivity(Completed.class);
+                }
                 closeDrawer();
-                switchActivity(Completed.class);
                 break;
 
-            case R.id.menu_item_trash:
+            case R.id.side_menu_trash:
+                if (!(getActivity() instanceof Trash)) {
+                    switchActivity(Trash.class);
+                }
                 closeDrawer();
-                switchActivity(Trash.class);
                 break;
         }
     }
