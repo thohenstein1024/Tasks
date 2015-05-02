@@ -1,8 +1,12 @@
 package com.nocomment.taylor.tasks.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDialog;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -48,12 +52,17 @@ public class New extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        confirmDiscardTask();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         switch (id) {
             case android.R.id.home:
-                finish();
+                confirmDiscardTask();
                 return true;
 
             case R.id.action_save_task:
@@ -61,7 +70,7 @@ public class New extends ActionBarActivity {
                 return true;
 
             case R.id.action_discard_task:
-                discardTask();
+                confirmDiscardTask();
                 return true;
         }
 
@@ -69,7 +78,7 @@ public class New extends ActionBarActivity {
     }
 
     private void saveTask() {
-        if (taskName.getText().length() != 0) {
+        if (!TextUtils.isEmpty(taskName.getText())) {
             TaskDbHelper dbHelper = new TaskDbHelper(this);
             Task task = new Task();
 
@@ -103,15 +112,33 @@ public class New extends ActionBarActivity {
         }
     }
 
-    private void discardTask() {
-        if (taskName.getText().length() == 0 &&
-                dueDate.getText().length() == 0 &&
-                location.getText().length() == 0 &&
-                notes.getText().length() == 0) {
+    private void confirmDiscardTask() {
+        if (TextUtils.isEmpty(taskName.getText()) &&
+                TextUtils.isEmpty(dueDate.getText()) &&
+                TextUtils.isEmpty(location.getText()) &&
+                TextUtils.isEmpty(notes.getText())) {
             finish();
         } else {
-            //TODO: confirmation dialogue
-            finish();
+            AppCompatDialog dialog;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle(R.string.confirm_discard_task_title)
+                    .setMessage(R.string.confirm_discard_task)
+                    .setPositiveButton(R.string.discard, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+
+            dialog = builder.create();
+            dialog.show();
         }
     }
 }

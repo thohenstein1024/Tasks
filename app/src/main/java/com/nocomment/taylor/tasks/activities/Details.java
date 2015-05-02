@@ -32,8 +32,12 @@ public class Details extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        Bundle bundle = getIntent().getExtras();
-        task = bundle.getParcelable("task");
+        if (savedInstanceState != null) {
+            task = savedInstanceState.getParcelable("task");
+        } else {
+            Bundle bundle = getIntent().getExtras();
+            task = bundle.getParcelable("task");
+        }
 
         taskName = (TextView) findViewById(R.id.display_details_task_name);
         dueDate = (TextView) findViewById(R.id.display_details_due_date);
@@ -46,6 +50,12 @@ public class Details extends ActionBarActivity {
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(task.taskName);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("task", task);
     }
 
     @Override
@@ -83,6 +93,8 @@ public class Details extends ActionBarActivity {
                 task = data.getParcelableExtra("task");
                 populateFields(task);
                 setVisibility(taskName, dueDate, location, notes);
+                //noinspection ConstantConditions
+                getSupportActionBar().setTitle(task.taskName);
             }
         }
     }

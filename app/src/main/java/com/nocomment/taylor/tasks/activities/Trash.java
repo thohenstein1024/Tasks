@@ -2,6 +2,7 @@ package com.nocomment.taylor.tasks.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDialog;
 import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.Gravity;
@@ -140,7 +143,7 @@ public class Trash extends ActionBarActivity implements AdapterView.OnItemLongCl
 
         switch (id) {
             case R.id.action_empty_trash:
-                deleteAll();
+                confirmEmptyTrash();
                 return true;
 
             case R.id.action_restore_all:
@@ -207,7 +210,6 @@ public class Trash extends ActionBarActivity implements AdapterView.OnItemLongCl
     }
 
     private void deleteAll() {
-        //TODO: confirmation dialogue
         int deletedRowID = dbHelper.hardDeleteAllTrash();
         if (deletedRowID > 0) {
             List<Task> deletedTasks = dbHelper.getAllDeletedTasks();
@@ -262,5 +264,26 @@ public class Trash extends ActionBarActivity implements AdapterView.OnItemLongCl
 
         Toast toast = Toast.makeText(getApplicationContext(), feedback, Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    private void confirmEmptyTrash() {
+        AppCompatDialog dialog;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(R.string.confirm_empty_trash_title)
+                .setMessage(R.string.confirm_empty_trash)
+                .setPositiveButton(R.string.empty_trash, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteAll();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        dialog = builder.create();
+        dialog.show();
     }
 }

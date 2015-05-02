@@ -3,10 +3,10 @@
 
     <style name="AppTheme" parent="AppTheme.Base">
 
-        <item name="android:colorPrimary">@color/md_green_500</item>
+        <item name="android:colorPrimary">@color/md_blue_A700</item>
 
-        <item name="android:colorPrimaryDark">@color/md_green_700</item>
+        <item name="android:colorPrimaryDark">@color/md_blue_900</item>
 
-        <item name="android:colorAccent">@color/md_blue_grey_500</item>
+        <item name="android:colorAccent">@color/md_pink_A200</item>
     </style>
 </resources>

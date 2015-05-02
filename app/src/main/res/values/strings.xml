@@ -18,6 +18,7 @@
     <string name="discard_changes">Discard Changes</string>
     <string name="changes_saved">Changes saved.</string>
     <string name="error_saving_changes">Error saving changes.</string>
+    <string name="confirm_discard_changes_title">Discard Changes?</string>
     <string name="confirm_discard_changes">Are you sure you want to discard your changes?</string>
 
     <!--HomeScreen-->
@@ -31,6 +32,7 @@
     <string name="save_task">Save Task</string>
     <string name="discard_task">Discard Task</string>
     <string name="error_saving_task">Error saving task.</string>
+    <string name="confirm_discard_task_title">Discard Task?</string>
     <string name="confirm_discard_task">Are you sure you want to discard this task?</string>
 
     <!--Trash-->
@@ -39,7 +41,8 @@
     <string name="restore_all">Restore All</string>
     <string name="restore_selection">Restore Selection</string>
     <string name="delete_selection">Delete Selection</string>
-    <string name="confirm_empty_trash">Empty Trash? All tasks in Trash will be permanently deleted.</string>
+    <string name="confirm_empty_trash_title">Empty Trash?</string>
+    <string name="confirm_empty_trash">All tasks in Trash will be permanently deleted.</string>
     <string name="all_tasks_restored">All tasks restored.</string>
     <string name="selected_tasks_restored">Selected tasks restored.</string>
     <string name="error_restoring_selected_tasks">Error restoring selected tasks.</string>
@@ -56,4 +59,6 @@
     <string name="sort_by_due_date">Sort by due date</string>
     <string name="open_drawer">Open Drawer</string>
     <string name="close_drawer">Close Drawer</string>
+    <string name="discard">Discard</string>
+    <string name="cancel">Cancel</string>
 </resources>

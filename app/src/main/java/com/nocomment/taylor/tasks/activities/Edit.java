@@ -1,9 +1,13 @@
 package com.nocomment.taylor.tasks.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDialog;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -56,12 +60,17 @@ public class Edit extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        confirmDiscardChanges();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         switch (id) {
             case android.R.id.home:
-                finish();
+                confirmDiscardChanges();
                 return true;
 
             case R.id.action_save_changes:
@@ -69,7 +78,7 @@ public class Edit extends ActionBarActivity {
                 return true;
 
             case R.id.action_discard_changes:
-                discardChanges();
+                confirmDiscardChanges();
                 return true;
         }
 
@@ -84,7 +93,7 @@ public class Edit extends ActionBarActivity {
     }
 
     private void saveChanges() {
-        if (taskName.getText().length() != 0) {
+        if (!TextUtils.isEmpty(taskName.getText())) {
             TaskDbHelper dbHelper = new TaskDbHelper(this);
 
             task.taskName = taskName.getText().toString();
@@ -121,8 +130,32 @@ public class Edit extends ActionBarActivity {
         }
     }
 
-    private void discardChanges() {
-        //TODO: confirmation dialogue
-        finish();
+    private void confirmDiscardChanges() {
+        if (TextUtils.equals(task.taskName, taskName.getText()) &&
+                TextUtils.equals(task.dueDate, dueDate.getText()) &&
+                TextUtils.equals(task.location, location.getText()) &&
+                TextUtils.equals(task.notes, notes.getText())) {
+            finish();
+        } else {
+            AppCompatDialog dialog;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle(R.string.confirm_discard_changes_title)
+                    .setMessage(R.string.confirm_discard_changes)
+                    .setPositiveButton(R.string.discard, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+
+            dialog = builder.create();
+            dialog.show();
+        }
     }
 }
