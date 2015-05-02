@@ -1,13 +1,20 @@
+# Android Studio
+.idea/
 .gradle
-/local.properties
+*.iml
+*.iws
+*.ipr
+*~
+*.swp
+/build
+build/*
 /.idea/workspace.xml
 /.idea/libraries
-.DS_Store
-/build
-.gradle
 /local.properties
-/.idea/workspace.xml
-.DS_Store
+/*/local.properties
+/*/out
+/*/*/build
+/*/*/production
 
 # built application files
 *.apk
@@ -26,20 +33,12 @@ gen/
 # Local configuration file (sdk path, etc)
 local.properties
 
+# Windows thumbnail db
+Thumbs.db
+
+# OSX files
+.DS_Store
+
 # Eclipse project files
 .classpath
 .project
-
-# Android Studio
-.idea/
-.gradle
-/*/local.properties
-/*/out
-/*/*/build
-build/*
-/*/*/production
-*.iml
-*.iws
-*.ipr
-*~
-*.swp
