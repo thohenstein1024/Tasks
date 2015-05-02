@@ -4,16 +4,28 @@
     tools:context=".HomeScreen">
 
     <item
-        android:id="@+id/action_clear_completed"
-        android:orderInCategory="100"
-        android:title="@string/clear_completed"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/action_new_task"
         android:icon="@drawable/ic_action_add"
-        android:orderInCategory="101"
+        android:orderInCategory="100"
         android:title="@string/new_task"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
+
+    <item
+        android:id="@+id/action_sort_by_name"
+        android:orderInCategory="101"
+        android:title="@string/sort_by_name"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_by_due_date"
+        android:orderInCategory="102"
+        android:title="@string/sort_by_due_date"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_clear_completed"
+        android:orderInCategory="103"
+        android:title="@string/clear_completed"
+        app:showAsAction="never" />
 </menu>

@@ -22,6 +22,7 @@ import com.nocomment.taylor.tasks.R;
 import com.nocomment.taylor.tasks.adapters.TaskAdapter;
 import com.nocomment.taylor.tasks.models.Task;
 import com.nocomment.taylor.tasks.storage.TaskDbHelper;
+import com.nocomment.taylor.tasks.storage.TaskSettings;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class HomeScreen extends ActionBarActivity implements ListView.OnItemClic
 
     private TaskAdapter taskAdapter;
     private TaskDbHelper dbHelper;
+    private TaskSettings settings;
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
@@ -62,6 +64,7 @@ public class HomeScreen extends ActionBarActivity implements ListView.OnItemClic
 
         taskAdapter = new TaskAdapter(this);
         dbHelper = new TaskDbHelper(this);
+        settings = new TaskSettings(this);
 
         ListView taskList = (ListView) findViewById(R.id.current_task_list);
 
@@ -128,6 +131,14 @@ public class HomeScreen extends ActionBarActivity implements ListView.OnItemClic
                 newTask();
                 return true;
 
+            case R.id.action_sort_by_name:
+                sortByName();
+                return true;
+
+            case R.id.action_sort_by_due_date:
+                sortByDueDate();
+                return true;
+
             case R.id.action_clear_completed:
                 clearCompleted();
                 return true;
@@ -152,6 +163,22 @@ public class HomeScreen extends ActionBarActivity implements ListView.OnItemClic
     private void newTask() {
         Intent intent = new Intent(this, New.class);
         startActivityForResult(intent, NEW_TASK_CODE);
+    }
+
+    private void sortByName() {
+        if (settings.getHomeScreenSortOrder() != 0) {
+            settings.setHomeScreenSortOrder(0);
+            List<Task> currentTasks = dbHelper.getAllCurrentTasks();
+            taskAdapter.swapTasks(currentTasks);
+        }
+    }
+
+    private void sortByDueDate() {
+        if (settings.getHomeScreenSortOrder() != 1) {
+            settings.setHomeScreenSortOrder(1);
+            List<Task> currentTasks = dbHelper.getAllCurrentTasks();
+            taskAdapter.swapTasks(currentTasks);
+        }
     }
 
     private void clearCompleted() {

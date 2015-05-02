@@ -22,6 +22,7 @@ import com.nocomment.taylor.tasks.R;
 import com.nocomment.taylor.tasks.adapters.TaskAdapter;
 import com.nocomment.taylor.tasks.models.Task;
 import com.nocomment.taylor.tasks.storage.TaskDbHelper;
+import com.nocomment.taylor.tasks.storage.TaskSettings;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class Completed extends ActionBarActivity implements ListView.OnItemClick
 
     private TaskAdapter taskAdapter;
     private TaskDbHelper dbHelper;
+    private TaskSettings settings;
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
@@ -69,6 +71,7 @@ public class Completed extends ActionBarActivity implements ListView.OnItemClick
 
         taskAdapter = new TaskAdapter(this);
         dbHelper = new TaskDbHelper(this);
+        settings = new TaskSettings(this);
 
         ListView taskList = (ListView) findViewById(R.id.completed_task_list);
 
@@ -131,6 +134,14 @@ public class Completed extends ActionBarActivity implements ListView.OnItemClick
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.action_sort_by_name:
+                sortByName();
+                return true;
+
+            case R.id.action_sort_by_due_date:
+                sortByDueDate();
+                return true;
+
             case R.id.action_delete_all:
                 deleteAllCompleted();
                 return true;
@@ -150,6 +161,22 @@ public class Completed extends ActionBarActivity implements ListView.OnItemClick
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void sortByName() {
+        if (settings.getCompletedSortOrder() != 0) {
+            settings.setCompletedSortOrder(0);
+            List<Task> completedTasks = dbHelper.getAllCompletedTasks();
+            taskAdapter.swapTasks(completedTasks);
+        }
+    }
+
+    private void sortByDueDate() {
+        if (settings.getCompletedSortOrder() != 1) {
+            settings.setCompletedSortOrder(1);
+            List<Task> completedTasks = dbHelper.getAllCompletedTasks();
+            taskAdapter.swapTasks(completedTasks);
+        }
     }
 
     private void deleteAllCompleted() {
