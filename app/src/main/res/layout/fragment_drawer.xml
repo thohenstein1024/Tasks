@@ -1,27 +1,50 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--suppress ALL -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/side_menu_tasks"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:alpha="0.87"
         android:background="?attr/selectableItemBackground"
-        android:text="@string/app_name" />
+        android:drawableLeft="@drawable/ic_icon_list"
+        android:drawablePadding="32dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:text="@string/app_name"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/side_menu_completed_tasks"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:alpha="0.87"
         android:background="?attr/selectableItemBackground"
-        android:text="@string/title_activity_completed" />
+        android:drawableLeft="@drawable/ic_icon_done_all"
+        android:drawablePadding="32dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:text="@string/title_activity_completed"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/side_menu_trash"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:alpha="0.87"
         android:background="?attr/selectableItemBackground"
-        android:text="@string/title_activity_trash" />
+        android:drawableLeft="@drawable/ic_icon_delete"
+        android:drawablePadding="32dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:text="@string/title_activity_trash"
+        android:textSize="14sp" />
 </LinearLayout>
