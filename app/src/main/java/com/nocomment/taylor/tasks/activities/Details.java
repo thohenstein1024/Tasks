@@ -14,8 +14,10 @@ import com.nocomment.taylor.tasks.R;
 import com.nocomment.taylor.tasks.models.Task;
 import com.nocomment.taylor.tasks.storage.TaskDbHelper;
 
+import java.text.SimpleDateFormat;
 
-@SuppressWarnings("deprecation")
+
+@SuppressWarnings("ALL")
 public class Details extends ActionBarActivity {
 
     private static final int EDIT_TASK_CODE = 300;
@@ -45,9 +47,8 @@ public class Details extends ActionBarActivity {
         notes = (TextView) findViewById(R.id.display_details_notes);
 
         populateFields(task);
-        setVisibility(taskName, dueDate, location, notes);
+        setVisibility(location, notes);
 
-        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(task.taskName);
     }
@@ -92,33 +93,21 @@ public class Details extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
                 task = data.getParcelableExtra("task");
                 populateFields(task);
-                setVisibility(taskName, dueDate, location, notes);
-                //noinspection ConstantConditions
+                setVisibility(location, notes);
                 getSupportActionBar().setTitle(task.taskName);
             }
         }
     }
 
     private void populateFields(Task task) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("E, MMM d, h:mm a");
         taskName.setText(task.taskName);
-        dueDate.setText(task.dueDate);
+        dueDate.setText(dateFormat.format(task.dueDate));
         location.setText(task.location);
         notes.setText(task.notes);
     }
 
-    private void setVisibility(TextView taskName, TextView dueDate, TextView location, TextView notes) {
-        if (TextUtils.isEmpty(taskName.getText())) {
-            taskName.setVisibility(View.GONE);
-        } else {
-            taskName.setVisibility(View.VISIBLE);
-        }
-
-        if (TextUtils.isEmpty(dueDate.getText())) {
-            dueDate.setVisibility(View.GONE);
-        } else {
-            dueDate.setVisibility(View.VISIBLE);
-        }
-
+    private void setVisibility(TextView location, TextView notes) {
         if (TextUtils.isEmpty(location.getText())) {
             location.setVisibility(View.GONE);
         } else {

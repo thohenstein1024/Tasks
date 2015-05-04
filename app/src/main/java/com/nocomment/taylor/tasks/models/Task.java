@@ -21,7 +21,7 @@ public class Task implements Parcelable {
     public int id;
 
     public String taskName;
-    public String dueDate;
+    public long dueDate;
     public String location;
     public String notes;
 
@@ -36,7 +36,7 @@ public class Task implements Parcelable {
     public Task(Parcel source) {
         id = source.readInt();
         taskName = source.readString();
-        dueDate = source.readString();
+        dueDate = source.readLong();
         location = source.readString();
         notes = source.readString();
         completed = source.readInt() != 0;
@@ -53,7 +53,7 @@ public class Task implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(taskName);
-        dest.writeString(dueDate);
+        dest.writeLong(dueDate);
         dest.writeString(location);
         dest.writeString(notes);
         dest.writeInt(completed ? 1 : 0);

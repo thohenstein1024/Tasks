@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nocomment.taylor.tasks.R;
@@ -27,7 +28,7 @@ import com.nocomment.taylor.tasks.storage.TaskSettings;
 import java.util.List;
 
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("ALL")
 public class Completed extends ActionBarActivity implements ListView.OnItemClickListener {
 
     private static final int TASK_DETAILS_CODE = 200;
@@ -79,13 +80,15 @@ public class Completed extends ActionBarActivity implements ListView.OnItemClick
         taskList.setOnItemClickListener(this);
         taskAdapter.setOnCheckedChangedListener(checkedChangeListener);
 
-        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_completed);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open_drawer, R.string.close_drawer);
 
         drawerLayout.setDrawerListener(drawerToggle);
+
+        TextView selectedMenuItem = (TextView) findViewById(R.id.side_menu_completed_tasks);
+        selectedMenuItem.setBackgroundColor(getResources().getColor(R.color.md_grey_200));
 
         IntentFilter intentFilter = new IntentFilter(DrawerFragment.ACTION_CLOSE_DRAWER);
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);

@@ -52,6 +52,7 @@
     <!--General-->
     <string name="task_name">Task Name</string>
     <string name="due_date">Due Date</string>
+    <string name="time">Time</string>
     <string name="location">Location</string>
     <string name="notes">Notes</string>
     <string name="task_needs_name">The task needs a name.</string>

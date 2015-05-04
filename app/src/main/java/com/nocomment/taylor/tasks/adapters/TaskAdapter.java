@@ -1,6 +1,7 @@
 package com.nocomment.taylor.tasks.adapters;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,12 @@ import com.nocomment.taylor.tasks.R;
 import com.nocomment.taylor.tasks.models.Task;
 import com.nocomment.taylor.tasks.storage.TaskDbHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 
+@SuppressWarnings("ALL")
 public class TaskAdapter extends BaseAdapter {
 
     private Context context;
@@ -66,7 +69,15 @@ public class TaskAdapter extends BaseAdapter {
         checkBox.setTag(position);
         checkBox.setChecked(task.completed);
         taskName.setText(task.taskName);
-        dueDate.setText(task.dueDate);
+
+        if (task.completed) {
+            taskName.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            taskName.setPaintFlags(0);
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("E, MMM d, h:mm a");
+        dueDate.setText(dateFormat.format(task.dueDate));
 
         return view;
     }
@@ -79,6 +90,7 @@ public class TaskAdapter extends BaseAdapter {
         TaskDbHelper dbHelper = new TaskDbHelper(context);
         int completed = (isCompleted ? 1 : 0);
         dbHelper.toggleCompleted(id, completed);
+        notifyDataSetChanged();
     }
 
     public void remove(int position) {

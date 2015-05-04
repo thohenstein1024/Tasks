@@ -1,35 +1,62 @@
+<!--suppress ALL -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="8dp"
     android:isScrollContainer="true"
     android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     tools:context="com.nocomment.taylor.tasks.activities.Edit">
 
     <EditText
         android:id="@+id/input_edit_task_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/task_name"
-        android:inputType="textCapWords" />
+        android:inputType="textCapWords"
+        android:paddingTop="16dp" />
 
-    <EditText
-        android:id="@+id/input_edit_due_date"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/due_date"
-        android:inputType="datetime" />
+        android:orientation="horizontal"
+        android:paddingTop="6dp">
+
+        <Button
+            android:id="@+id/input_edit_date_select"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="?attr/selectableItemBackground"
+            android:text="@string/due_date"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/input_edit_time_select"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="?attr/selectableItemBackground"
+            android:text="@string/time"
+            android:textAllCaps="false" />
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/input_edit_location"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="@string/location"
-        android:inputType="textPostalAddress|textCapWords" />
+        android:inputType="textPostalAddress|textCapWords"
+        android:paddingTop="10dp" />
 
     <EditText
         android:id="@+id/input_edit_notes"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/notes" />
+        android:hint="@string/notes"
+        android:paddingTop="16dp" />
 </LinearLayout>

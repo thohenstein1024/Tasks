@@ -1,9 +1,9 @@
 package com.nocomment.taylor.tasks.storage;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+@SuppressWarnings("ALL")
 public class TaskSettings {
 
     private static final String SORT_SETTINGS = "SORT_SETTINGS";
@@ -13,7 +13,6 @@ public class TaskSettings {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
-    @SuppressLint("CommitPrefEdits")
     public TaskSettings(Context context) {
         this.preferences = context.getSharedPreferences(SORT_SETTINGS, Context.MODE_PRIVATE);
         this.editor = preferences.edit();

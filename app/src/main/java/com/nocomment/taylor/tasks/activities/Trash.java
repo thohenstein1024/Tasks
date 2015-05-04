@@ -22,6 +22,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nocomment.taylor.tasks.R;
@@ -33,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("ALL")
 public class Trash extends ActionBarActivity implements AdapterView.OnItemLongClickListener, AbsListView.MultiChoiceModeListener {
 
     private TaskAdapter taskAdapter;
@@ -42,9 +43,7 @@ public class Trash extends ActionBarActivity implements AdapterView.OnItemLongCl
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
 
-    @SuppressWarnings("unused")
     private android.support.v7.view.ActionMode actionMode;
-    @SuppressWarnings("unused")
     private android.support.v7.view.ActionMode.Callback callback;
 
     private ArrayList<Integer> selectedTaskIDs = new ArrayList<>();
@@ -87,13 +86,15 @@ public class Trash extends ActionBarActivity implements AdapterView.OnItemLongCl
         taskList.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         taskAdapter.setOnCheckedChangedListener(checkedChangeListener);
 
-        //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_trash);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open_drawer, R.string.close_drawer);
 
         drawerLayout.setDrawerListener(drawerToggle);
+
+        TextView selectedMenuItem = (TextView) findViewById(R.id.side_menu_trash);
+        selectedMenuItem.setBackgroundColor(getResources().getColor(R.color.md_grey_200));
 
         IntentFilter intentFilter = new IntentFilter(DrawerFragment.ACTION_CLOSE_DRAWER);
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);

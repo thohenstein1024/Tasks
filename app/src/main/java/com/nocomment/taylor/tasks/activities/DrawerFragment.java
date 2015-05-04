@@ -79,6 +79,6 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
-        }, 260);
+        }, 260);  //delay allows animation to finish smoothly
     }
 }

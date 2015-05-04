@@ -17,21 +17,17 @@ public class TaskDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Task.db";
 
-    private static final String TEXT_TYPE = " TEXT";
-    private static final String INT_TYPE = " INTEGER ";
-    private static final String COMMA_SEP = ", ";
-
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TaskContract.TaskEntry.TABLE_NAME +
                     " (" +
                     TaskContract.TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME + " TEXT, " +
-                    TaskContract.TaskEntry.COLUMN_NAME_DUE_DATE + " TEXT, " +
-                    TaskContract.TaskEntry.COLUMN_NAME_LOCATION + TEXT_TYPE + COMMA_SEP +
-                    TaskContract.TaskEntry.COLUMN_NAME_NOTES + TEXT_TYPE + COMMA_SEP +
-                    TaskContract.TaskEntry.COLUMN_NAME_COMPLETED + INT_TYPE + " DEFAULT 0 " + COMMA_SEP +
-                    TaskContract.TaskEntry.COLUMN_NAME_CLEARED + INT_TYPE + " DEFAULT 0 " + COMMA_SEP +
-                    TaskContract.TaskEntry.COLUMN_NAME_DELETED + INT_TYPE + " DEFAULT 0 " +
+                    TaskContract.TaskEntry.COLUMN_NAME_DUE_DATE + " INTEGER DEFAULT -1, " +
+                    TaskContract.TaskEntry.COLUMN_NAME_LOCATION + " TEXT, " +
+                    TaskContract.TaskEntry.COLUMN_NAME_NOTES + " TEXT, " +
+                    TaskContract.TaskEntry.COLUMN_NAME_COMPLETED + " INTEGER DEFAULT 0, " +
+                    TaskContract.TaskEntry.COLUMN_NAME_CLEARED + " INTEGER DEFAULT 0, " +
+                    TaskContract.TaskEntry.COLUMN_NAME_DELETED + " INTEGER DEFAULT 0" +
                     ")";
 
     private static final String SQL_DELETE_ENTRIES =
@@ -47,7 +43,7 @@ public class TaskDbHelper extends SQLiteOpenHelper {
             "SELECT * FROM " + TaskContract.TaskEntry.TABLE_NAME +
                     " WHERE " + TaskContract.TaskEntry.COLUMN_NAME_CLEARED + " = 0" +
                     " AND " + TaskContract.TaskEntry.COLUMN_NAME_DELETED + " = 0" +
-                    " ORDER BY " + TaskContract.TaskEntry.COLUMN_NAME_DUE_DATE + " DESC";
+                    " ORDER BY " + TaskContract.TaskEntry.COLUMN_NAME_DUE_DATE + " ASC";
 
     private static final String SQL_SELECT_ALL_COMPLETED_ORDER_BY_NAME =
             "SELECT * FROM " + TaskContract.TaskEntry.TABLE_NAME +
@@ -59,7 +55,7 @@ public class TaskDbHelper extends SQLiteOpenHelper {
             "SELECT * FROM " + TaskContract.TaskEntry.TABLE_NAME +
                     " WHERE " + TaskContract.TaskEntry.COLUMN_NAME_COMPLETED + " = 1" +
                     " AND " + TaskContract.TaskEntry.COLUMN_NAME_DELETED + " = 0" +
-                    " ORDER BY " + TaskContract.TaskEntry.COLUMN_NAME_DUE_DATE + " DESC";
+                    " ORDER BY " + TaskContract.TaskEntry.COLUMN_NAME_DUE_DATE + " ASC";
 
     private static final String SQL_SELECT_ALL_DELETED_ORDER_BY_NAME =
             "SELECT * FROM " + TaskContract.TaskEntry.TABLE_NAME +
@@ -100,7 +96,7 @@ public class TaskDbHelper extends SQLiteOpenHelper {
 
             task.id = cursor.getInt(cursor.getColumnIndex(TaskContract.TaskEntry._ID));
             task.taskName = cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME));
-            task.dueDate = cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_DUE_DATE));
+            task.dueDate = cursor.getLong(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_DUE_DATE));
             task.location = cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_LOCATION));
             task.notes = cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_NOTES));
             task.completed = (cursor.getInt(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_COMPLETED)) != 0);
@@ -130,7 +126,7 @@ public class TaskDbHelper extends SQLiteOpenHelper {
 
             task.id = cursor.getInt(cursor.getColumnIndex(TaskContract.TaskEntry._ID));
             task.taskName = cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME));
-            task.dueDate = cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_DUE_DATE));
+            task.dueDate = cursor.getLong(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_DUE_DATE));
             task.location = cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_LOCATION));
             task.notes = cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_NOTES));
             task.completed = (cursor.getInt(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_COMPLETED)) != 0);
@@ -154,7 +150,7 @@ public class TaskDbHelper extends SQLiteOpenHelper {
 
             task.id = cursor.getInt(cursor.getColumnIndex(TaskContract.TaskEntry._ID));
             task.taskName = cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_TASK_NAME));
-            task.dueDate = cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_DUE_DATE));
+            task.dueDate = cursor.getLong(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_DUE_DATE));
             task.location = cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_LOCATION));
             task.notes = cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_NOTES));
             task.completed = (cursor.getInt(cursor.getColumnIndex(TaskContract.TaskEntry.COLUMN_NAME_COMPLETED)) != 0);
@@ -233,16 +229,6 @@ public class TaskDbHelper extends SQLiteOpenHelper {
 
         return db.update(TaskContract.TaskEntry.TABLE_NAME, values,
                 TaskContract.TaskEntry._ID + " = " + id, null);
-    }
-
-    public int softDeleteSelection(String ids) {
-        SQLiteDatabase db = getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(TaskContract.TaskEntry.COLUMN_NAME_DELETED, 1);
-
-        return db.update(TaskContract.TaskEntry.TABLE_NAME, values,
-                TaskContract.TaskEntry._ID + " IN " + ids, null);
     }
 
     public int softDeleteAllCompleted() {
